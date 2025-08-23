@@ -589,7 +589,6 @@ class MyApp(QMainWindow):
             self.formul_motor3_input.text(),
             self.formul_motor3_preload_input.text(),
             self.formul_air_pump_input.text(),  # Main formül hava
-            self.formul_water_pump_input.text(),
             self.formul_selenoid_valve_input.text(),
             self.formul_cokme_valve_input.text(),
             self.formul_target_input_R.text(),
