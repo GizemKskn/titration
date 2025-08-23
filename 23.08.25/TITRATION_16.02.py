@@ -211,13 +211,13 @@ class MyApp(QMainWindow):
     def select_com_port(self):
         ports = serial.tools.list_ports.comports()
         port_list = [f"{port.device} - {port.description}" for port in ports]
-        port, ok = QtWidgets.QInputDialog.getItem(self, "Select COM Port", "Available COM Ports:", port_list, 0, False)
+        port, ok = QtWidgets.QInputDialog.getItem(self, "Seri Port Seç", "Mevcut COM Portlar:", port_list, 0, False)
         if ok and port:
             port_name = port.split(' - ')[0]
             self.ser = serial.Serial(port_name, 9600, timeout=1)
-            print(f"Connected to {port_name}")
+            print(f"Seri port bağlandı: {port_name}")
         else:
-            print("No port selected or available, using default /dev/ttyACM0")
+            print("Port seçilmedi, varsayılan /dev/ttyACM0 kullanılıyor")
             self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 
             
@@ -813,7 +813,7 @@ class MyApp(QMainWindow):
         # PH verisini sürekli oku ve ekrana yaz
         while True:
             ph_data = self.ser.readline().decode('utf-8').strip()
-            print(f"Arduino'dan gelen veri: {ph_data}")  # Gelen veriyi ekrana yaz
+            print(f"Arduino'dan gelen veri: {ph_data}")
             if ph_data.startswith("PH:"):
                 try:
                     ph_value = float(ph_data.split(": ")[1])
@@ -824,8 +824,6 @@ class MyApp(QMainWindow):
                 except Exception as e:
                     print(f"pH verisi hatalı: {ph_data}, hata: {e}")
             QApplication.processEvents()
-            # Döngüyü durdurmak için bir mekanizma eklenebilir (örneğin bir buton ile)
-            # Şimdilik sonsuz döngüde sürekli okuma
             time.sleep(0.5)
     
 ########
