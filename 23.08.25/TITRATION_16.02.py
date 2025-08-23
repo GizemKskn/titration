@@ -134,8 +134,9 @@ class MyApp(QMainWindow):
         super().__init__()                                                                                                                                                                                                                  
 
         self.thread_pool = QThreadPool()  # Thread pool oluşturuldu
-        self.ser = None
-        self.select_com_port()
+        self.ser_weight = None
+        self.ser_ph = None
+        self.select_com_ports()
         uic.loadUi('frontend_v8.ui', self)
 
         self.rgb_received = False
@@ -208,17 +209,28 @@ class MyApp(QMainWindow):
         QThreadPool.globalInstance().waitForDone()
         event.accept()
 
-    def select_com_port(self):
+    def select_com_ports(self):
         ports = serial.tools.list_ports.comports()
         port_list = [f"{port.device} - {port.description}" for port in ports]
-        port, ok = QtWidgets.QInputDialog.getItem(self, "Select COM Port", "Available COM Ports:", port_list, 0, False)
-        if ok and port:
-            port_name = port.split(' - ')[0]
-            self.ser = serial.Serial(port_name, 9600, timeout=1)
-            print(f"Connected to {port_name}")
+        # Ağırlık için port seçimi
+        port_weight, ok_weight = QtWidgets.QInputDialog.getItem(self, "Select COM Port for Weight", "Available COM Ports:", port_list, 0, False)
+        if ok_weight and port_weight:
+            port_name_weight = port_weight.split(' - ')[0]
+            self.ser_weight = serial.Serial(port_name_weight, 9600, timeout=1)
+            print(f"Weight COM connected: {port_name_weight}")
         else:
-            print("No port selected or available using defaulr")
-            self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+            print("No port selected for weight, using default /dev/ttyUSB0")
+            self.ser_weight = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+
+        # pH için port seçimi
+        port_ph, ok_ph = QtWidgets.QInputDialog.getItem(self, "Select COM Port for pH", "Available COM Ports:", port_list, 0, False)
+        if ok_ph and port_ph:
+            port_name_ph = port_ph.split(' - ')[0]
+            self.ser_ph = serial.Serial(port_name_ph, 9600, timeout=1)
+            print(f"pH COM connected: {port_name_ph}")
+        else:
+            print("No port selected for pH, using default /dev/ttyACM0")
+            self.ser_ph = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 
             
     def setup_signals(self):
@@ -699,18 +711,18 @@ class MyApp(QMainWindow):
 
     ## DENSITY
     def get_weight(self):
-        if self.ser is None or not self.ser.is_open:
-            print("Seri port bağlı değil veya açık değil.")
+        if self.ser_weight is None or not self.ser_weight.is_open:
+            print("Ağırlık için seri port bağlı değil veya açık değil.")
             return None
         time.sleep(1)
 
-        self.ser.reset_input_buffer()  
-        self.ser.write(b"WEIGHT_MEASURE\n")
+        self.ser_weight.reset_input_buffer()  
+        self.ser_weight.write(b"WEIGHT_MEASURE\n")
         time.sleep(0.5)  # İlk bekleme
         attempt_count = 5  # Yanıtı almak için maksimum deneme sayısı
 
         for _ in range(attempt_count):
-            weight_data = self.ser.readline().decode('utf-8').strip()
+            weight_data = self.ser_weight.readline().decode('utf-8').strip()
 
             if weight_data.startswith("Weight:"):
                 weight_value = float(weight_data.split(": ")[1])
@@ -756,7 +768,7 @@ class MyApp(QMainWindow):
 
             # Motor işlemi bitene kadar Arduino'dan "DONE" mesajını bekle
             while True:
-                done_message = self.ser.readline().decode('utf-8').strip()
+                done_message = self.ser_weight.readline().decode('utf-8').strip()
                 if done_message == "DONE":
                     print("Motor işlemi tamamlandı.")
                     break  
@@ -782,11 +794,11 @@ class MyApp(QMainWindow):
             self.calculate_output.setScene(scene)
 
     def get_ph(self):
-        if self.ser is None or not self.ser.is_open:
-            print("Seri port bağlı değil veya açık değil.")
+        if self.ser_ph is None or not self.ser_ph.is_open:
+            print("pH için seri port bağlı değil veya açık değil.")
             return None
         time.sleep(1)
-        self.ser.reset_input_buffer()
+        self.ser_ph.reset_input_buffer()
         # Motor seçimini ve miktarını al
         selected_motor = self.motor_combobox_2.currentText()
         motor_value = self.ph_motor_input.text()
@@ -803,16 +815,16 @@ class MyApp(QMainWindow):
             self.control_motor3(motor_value)
         # Motor işlemi bitene kadar Arduino'dan "DONE" mesajını bekle
         while True:
-            done_message = self.ser.readline().decode('utf-8').strip()
+            done_message = self.ser_ph.readline().decode('utf-8').strip()
             if done_message == "DONE":
                 print("Motor işlemi tamamlandı.")
                 break
         # Motor durduktan sonra PH ölçümü komutunu gönder ve sürekli oku
-        self.ser.write(b"PH_MEASURE\n")
+        self.ser_ph.write(b"PH_MEASURE\n")
         time.sleep(0.5)
         # PH verisini sürekli oku ve ekrana yaz
         while True:
-            ph_data = self.ser.readline().decode('utf-8').strip()
+            ph_data = self.ser_ph.readline().decode('utf-8').strip()
             if ph_data.startswith("PH:"):
                 try:
                     ph_value = float(ph_data.split(": ")[1])
