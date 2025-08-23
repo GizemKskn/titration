@@ -235,36 +235,21 @@ class MyApp(QMainWindow):
         self.report_button.clicked.connect(self.save_report)
         self.clean_button.clicked.connect(self.clean_system)
 
-        # MATH FORMÜL PAGE
-        self.math_formul_save_button.clicked.connect(self.save_math_formul)
-        self.math_formul_load_button.clicked.connect(self.load_math_formul)
-
         #DEV PAGE
-
         self.dev_motor1_button.clicked.connect(lambda: self.control_motor1(self.dev_motor1_input.text()))
         self.dev_motor2_button.clicked.connect(lambda: self.control_motor2(self.dev_motor2_input.text()))
         self.dev_motor3_button.clicked.connect(lambda: self.control_motor3(self.dev_motor3_input.text()))
-
-
         self.dev_air_pump_onoff.clicked.connect(lambda: self.toggle_air_pump())
         self.dev_water_pump_onoff.clicked.connect(lambda: self.toggle_water_pump())
         self.dev_selenoid_valve_onoff.clicked.connect(lambda: self.toggle_selenoid_valve())
-        
         self.dev_air_pump_button.clicked.connect(lambda: self.trigger_air_pump(self.dev_air_pump_input.text()))
         self.dev_water_pump_button.clicked.connect(lambda: self.trigger_water_pump(self.dev_water_pump_input.text()))
         self.dev_selenoid_valve_button.clicked.connect(lambda: self.trigger_selenoid_valve(self.dev_selenoid_valve_input.text()))
-        
         self.dev_camera_button.clicked.connect(lambda: self.control_camera())
 
-        #FORMUL PAGE
-        self.save_formul_button_2.clicked.connect(self.saveFormula)
-
-        """self.formul_motor1_gram_button.clicked.connect(lambda: self.setUnit("motor1", "gram"))
-        self.formul_motor1_ml_button.clicked.connect(lambda: self.setUnit("motor1", "ml"))
-        self.formul_motor2_gram_button.clicked.connect(lambda: self.setUnit("motor2", "gram"))
-        self.formul_motor2_ml_button.clicked.connect(lambda: self.setUnit("motor2", "ml"))
-        self.formul_motor3_gram_button.clicked.connect(lambda: self.setUnit("motor3", "gram"))
-        self.formul_motor3_ml_button.clicked.connect(lambda: self.setUnit("motor3", "ml"))"""
+        # FORMUL PAGE (Math Formül Tabı)
+        self.save_formul_button.clicked.connect(self.saveFormula)
+        self.formul_load_button.clicked.connect(self.loadFormula)
 
         #DENSITY PAGE
         self.weight_button.clicked.connect(self.get_weight)
@@ -596,18 +581,47 @@ class MyApp(QMainWindow):
 
 ### Formül
     def saveFormula(self):
+        formula_name = self.formul_name_input.text()
         formula_data = [
-            self.formul_name_input.text(), self.formul_motor1_input.text(),
-            self.formul_motor2_input.text(), self.formul_motor3_input.text(),
+            formula_name,
+            self.formul_motor1_input.text(),
+            self.formul_motor2_input.text(),
+            self.formul_motor3_input.text(),
             self.formul_motor3_preload_input.text(),
-            self.formul_air_pump_input.text(), self.formul_water_pump_input.text(),
-            self.formul_selenoid_valve_input.text(), self.formul_cokme_valve_input.text(),
-            self.formul_target_input_R.text(), self.formul_target_input_G.text(), self.formul_target_input_B.text(),
-            self.formul_threshold_input_R.text(), self.formul_threshold_input_G.text(), self.formul_threshold_input_B.text()
+            self.formul_air_pump_input.text(),  # Main formül hava
+            self.formul_water_pump_input.text(),
+            self.formul_selenoid_valve_input.text(),
+            self.formul_cokme_valve_input.text(),
+            self.formul_target_input_R.text(),
+            self.formul_target_input_G.text(),
+            self.formul_target_input_B.text(),
+            self.formul_threshold_input_R.text(),
+            self.formul_threshold_input_G.text(),
+            self.formul_threshold_input_B.text(),
+            self.formul_air_pump_input_2.text(),  # Temizlik hava
+            self.formul_water_pump_input_2.text(),
+            self.formul_selenoid_valve_input_2.text(),
+            self.math_formul_input.text()  # Math formül
         ]
-        with open('formulas.txt', 'a') as file:
-            file.write(','.join(formula_data) + '\n')
-        self.formula_combobox.addItem(self.formul_name_input.text())
+        # Formül dosyasını oku, aynı isim varsa sil
+        formulas = []
+        try:
+            with open('formulas.txt', 'r') as file:
+                for line in file:
+                    parts = line.strip().split(',')
+                    if parts[0] != formula_name:
+                        formulas.append(line.strip())
+        except FileNotFoundError:
+            pass
+        # Yeni formülü ekle
+        formulas.append(','.join(formula_data))
+        with open('formulas.txt', 'w') as file:
+            for f in formulas:
+                file.write(f + '\n')
+        # Combobox'a ekle (varsa tekrar eklemez)
+        if self.formula_combobox.findText(formula_name) == -1:
+            self.formula_combobox.addItem(formula_name)
+        self.status_label.setText("Formül kaydedildi.")
 
     def loadFormula(self):
         selected_formula = self.formula_combobox.currentText()
@@ -615,7 +629,27 @@ class MyApp(QMainWindow):
             for line in file:
                 parts = line.strip().split(',')
                 if parts[0] == selected_formula:
-                    self.apply_formula(parts)
+                    self.formul_name_input.setText(parts[0])
+                    self.formul_motor1_input.setText(parts[1])
+                    self.formul_motor2_input.setText(parts[2])
+                    self.formul_motor3_input.setText(parts[3])
+                    self.formul_motor3_preload_input.setText(parts[4])
+                    self.formul_air_pump_input.setText(parts[5])
+                    self.formul_water_pump_input.setText(parts[6])
+                    self.formul_selenoid_valve_input.setText(parts[7])
+                    self.formul_cokme_valve_input.setText(parts[8])
+                    self.formul_target_input_R.setText(parts[9])
+                    self.formul_target_input_G.setText(parts[10])
+                    self.formul_target_input_B.setText(parts[11])
+                    self.formul_threshold_input_R.setText(parts[12])
+                    self.formul_threshold_input_G.setText(parts[13])
+                    self.formul_threshold_input_B.setText(parts[14])
+                    self.formul_air_pump_input_2.setText(parts[15])
+                    self.formul_water_pump_input_2.setText(parts[16])
+                    self.formul_selenoid_valve_input_2.setText(parts[17])
+                    self.math_formul_input.setText(parts[18])
+                    break
+        self.status_label.setText("Formül yüklendi.")
 
     def loadFormulas(self):
     #formulas.txt dosyasından formülleri yükler ve comboBox'a ekleme

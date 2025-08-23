@@ -51,7 +51,7 @@
        <string notr="true">font-size: 12px;</string>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -2173,7 +2173,7 @@ background-color: green;</string>
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -3189,37 +3189,6 @@ background-color: blue;</string>
                </property>
               </widget>
              </item>
-             <item row="12" column="1" rowspan="2">
-              <widget class="QPushButton" name="load_formul_button">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>240</width>
-                 <height>70</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>MS Shell Dlg 2</family>
-                 <pointsize>10</pointsize>
-                 <weight>9</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 75 10pt &quot;MS Shell Dlg 2&quot;;</string>
-               </property>
-               <property name="text">
-                <string>FORMÜL YÜKLE</string>
-               </property>
-              </widget>
-             </item>
              <item row="13" column="0">
               <widget class="QLabel" name="label_20">
                <property name="text">
@@ -3227,37 +3196,6 @@ background-color: blue;</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="12" column="3" rowspan="2">
-              <widget class="QPushButton" name="save_formul_button_3">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>200</width>
-                 <height>70</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>MS Shell Dlg 2</family>
-                 <pointsize>10</pointsize>
-                 <weight>9</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 75 10pt &quot;MS Shell Dlg 2&quot;;</string>
-               </property>
-               <property name="text">
-                <string>FORMÜL KAYDET</string>
                </property>
               </widget>
              </item>
@@ -3303,8 +3241,8 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <set>Qt::AlignCenter</set>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_32">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_33">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -3312,7 +3250,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Hava&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Temizlik Sıvısı&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3335,43 +3273,8 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_33">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Temizlik Sıvısı&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="2">
               <widget class="QLabel" name="label_30">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Saniye</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <widget class="QLabel" name="label_46">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -3405,8 +3308,8 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_34">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_32">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -3414,7 +3317,26 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Valf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Hava&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_46">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+               </property>
+               <property name="text">
+                <string>Saniye</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3456,28 +3378,19 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="3" rowspan="2">
-              <widget class="QPushButton" name="save_formul_button_2">
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_34">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <property name="font">
-                <font>
-                 <family>MS Shell Dlg 2</family>
-                 <pointsize>10</pointsize>
-                 <weight>9</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 75 10pt &quot;MS Shell Dlg 2&quot;;</string>
-               </property>
                <property name="text">
-                <string>FORMÜL KAYDET</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Valf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -3535,7 +3448,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <set>Qt::AlignCenter</set>
             </property>
            </widget>
-           <widget class="QPushButton" name="math_formul_save_button">
+           <widget class="QPushButton" name="save_formul_button">
             <property name="geometry">
              <rect>
               <x>770</x>
@@ -3566,7 +3479,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string>FORMÜL KAYDET</string>
             </property>
            </widget>
-           <widget class="QPushButton" name="math_formul_load_button">
+           <widget class="QPushButton" name="formul_load_button">
             <property name="geometry">
              <rect>
               <x>550</x>
@@ -3937,7 +3850,7 @@ QComboBox {
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="weight_button_2">
+           <widget class="QPushButton" name="ph_button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -3954,12 +3867,12 @@ QComboBox {
              <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
             <property name="text">
-             <string>AĞIRLIK HESAPLA</string>
+             <string>PH HESAPLA</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QGraphicsView" name="weight_output_2">
+           <widget class="QGraphicsView" name="ph_output">
             <property name="styleSheet">
              <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
@@ -3979,6 +3892,121 @@ QComboBox {
        <attribute name="title">
         <string>Bulanıklık</string>
        </attribute>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>14</x>
+          <y>10</y>
+          <width>1031</width>
+          <height>1811</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_29">
+         <item row="0" column="0" rowspan="2">
+          <widget class="QLabel" name="label_76">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Motor:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" rowspan="2">
+          <widget class="QComboBox" name="motor_combobox_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+QComboBox {
+    padding-left: 30px; /* Kenar boşluğunu ayarla */
+	font: 12pt &quot;MS Shell Dlg 2&quot;;
+}
+</string>
+           </property>
+           <property name="editable">
+            <bool>false</bool>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+           </property>
+           <property name="minimumContentsLength">
+            <number>0</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>Motor1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Motor2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Motor3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Motor4</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Motor5</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="blurring_button">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>90</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
+           </property>
+           <property name="text">
+            <string>BULANIKLIK  HESAPLA</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QGraphicsView" name="blurring_output">
+           <property name="styleSheet">
+            <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+           </property>
+           <property name="lineWidth">
+            <number>4</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
