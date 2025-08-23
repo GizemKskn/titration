@@ -51,7 +51,7 @@
        <string notr="true">font-size: 12px;</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>5</number>
       </property>
       <property name="iconSize">
        <size>
@@ -2173,7 +2173,7 @@ background-color: green;</string>
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -3542,6 +3542,31 @@ p, li { white-space: pre-wrap; }
        <layout class="QGridLayout" name="gridLayout_25">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_24">
+          <item row="0" column="1" rowspan="2">
+           <widget class="QGroupBox" name="groupBox_15">
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
+            </property>
+            <property name="title">
+             <string>HESAP ÇIKTISI</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_23">
+             <item row="0" column="0">
+              <widget class="QGraphicsView" name="calculate_output">
+               <property name="styleSheet">
+                <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="lineWidth">
+                <number>4</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
           <item row="0" column="2" rowspan="2">
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <item>
@@ -3580,6 +3605,37 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="calculate_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>MS Shell Dlg 2</family>
+              <pointsize>14</pointsize>
+              <weight>9</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
+            </property>
+            <property name="text">
+             <string>YOĞUNLUK HESAPLA</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QGroupBox" name="groupBox_16">
@@ -3714,62 +3770,6 @@ QComboBox {
             </layout>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="calculate_button">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>MS Shell Dlg 2</family>
-              <pointsize>14</pointsize>
-              <weight>9</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
-            </property>
-            <property name="text">
-             <string>YOĞUNLUK HESAPLA</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" rowspan="2">
-           <widget class="QGroupBox" name="groupBox_15">
-            <property name="styleSheet">
-             <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
-            </property>
-            <property name="title">
-             <string>HESAP ÇIKTISI</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_23">
-             <item row="0" column="0">
-              <widget class="QGraphicsView" name="calculate_output">
-               <property name="styleSheet">
-                <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-               </property>
-               <property name="lineWidth">
-                <number>4</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
          </layout>
         </item>
        </layout>
@@ -3778,78 +3778,124 @@ QComboBox {
        <attribute name="title">
         <string>PH Tayin</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_26">
+       <layout class="QGridLayout" name="gridLayout_88">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_21">
+         <layout class="QGridLayout" name="gridLayout_58">
           <item row="0" column="0" rowspan="2">
-           <widget class="QLabel" name="label_75">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Motor:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" rowspan="2">
-           <widget class="QComboBox" name="motor_combobox_2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">
+           <layout class="QGridLayout" name="gridLayout_57">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_75">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Motor:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="2">
+             <widget class="QComboBox" name="motor_combobox_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">
 QComboBox {
     padding-left: 30px; /* Kenar boşluğunu ayarla */
 	font: 12pt &quot;MS Shell Dlg 2&quot;;
 }
 </string>
-            </property>
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-            </property>
-            <property name="minimumContentsLength">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>Motor1</string>
-             </property>
+              </property>
+              <property name="editable">
+               <bool>false</bool>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+              </property>
+              <property name="minimumContentsLength">
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Motor1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor5</string>
+               </property>
+              </item>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Motor2</string>
-             </property>
+            <item row="1" column="0" colspan="2">
+             <widget class="QLabel" name="label_117">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Ölçü&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Motor3</string>
-             </property>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="ph_motor_input">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 28pt &quot;MS Shell Dlg 2&quot;;</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Motor4</string>
-             </property>
+            <item row="1" column="3">
+             <widget class="QLabel" name="label_118">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;ml&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Motor5</string>
-             </property>
-            </item>
-           </widget>
+           </layout>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="1">
            <widget class="QPushButton" name="ph_button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -3871,7 +3917,7 @@ QComboBox {
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="1">
            <widget class="QGraphicsView" name="ph_output">
             <property name="styleSheet">
              <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
@@ -3892,121 +3938,161 @@ QComboBox {
        <attribute name="title">
         <string>Bulanıklık</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>14</x>
-          <y>10</y>
-          <width>1031</width>
-          <height>1811</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_29">
-         <item row="0" column="0" rowspan="2">
-          <widget class="QLabel" name="label_76">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Motor:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" rowspan="2">
-          <widget class="QComboBox" name="motor_combobox_3">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">
+       <layout class="QGridLayout" name="gridLayout_87">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_86">
+          <item row="0" column="0" rowspan="2">
+           <layout class="QGridLayout" name="gridLayout_85">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_76">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Motor:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="motor_combobox_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">
 QComboBox {
     padding-left: 30px; /* Kenar boşluğunu ayarla */
 	font: 12pt &quot;MS Shell Dlg 2&quot;;
 }
 </string>
-           </property>
-           <property name="editable">
-            <bool>false</bool>
-           </property>
-           <property name="sizeAdjustPolicy">
-            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-           </property>
-           <property name="minimumContentsLength">
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>Motor1</string>
+              </property>
+              <property name="editable">
+               <bool>false</bool>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+              </property>
+              <property name="minimumContentsLength">
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Motor1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Motor5</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_180">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Ölçü&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="blurring_motor_input">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 28pt &quot;MS Shell Dlg 2&quot;;</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="label_179">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;ml&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="blurring_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Motor2</string>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>90</height>
+             </size>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Motor3</string>
+            <property name="styleSheet">
+             <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
-           </item>
-           <item>
             <property name="text">
-             <string>Motor4</string>
+             <string>BULANIKLIK  HESAPLA</string>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Motor5</string>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QGraphicsView" name="blurring_output">
+            <property name="styleSheet">
+             <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
-           </item>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="blurring_button">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>90</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
-           </property>
-           <property name="text">
-            <string>BULANIKLIK  HESAPLA</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QGraphicsView" name="blurring_output">
-           <property name="styleSheet">
-            <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Sunken</enum>
-           </property>
-           <property name="lineWidth">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+            <property name="frameShadow">
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="lineWidth">
+             <number>4</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -4018,7 +4104,7 @@ QComboBox {
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -254,6 +254,7 @@ class MyApp(QMainWindow):
         #DENSITY PAGE
         self.weight_button.clicked.connect(self.get_weight)
         self.calculate_button.clicked.connect(self.calculate_density)
+        self.ph_button.clicked.connect(self.get_ph)
 
     def update_graphics_view(self, qImg, raw_data): 
         self.scene.clear()
@@ -780,6 +781,52 @@ class MyApp(QMainWindow):
             scene.addText("Failed to retrieve weight or volume.")
             self.calculate_output.setScene(scene)
 
+    def get_ph(self):
+        if self.ser is None or not self.ser.is_open:
+            print("Seri port bağlı değil veya açık değil.")
+            return None
+        time.sleep(1)
+        self.ser.reset_input_buffer()
+        # Motor seçimini ve miktarını al
+        selected_motor = self.motor_combobox_2.currentText()
+        motor_value = self.ph_motor_input.text()
+        try:
+            motor_value = float(motor_value.replace(',', '.')) if motor_value else 1
+        except ValueError:
+            motor_value = 1
+        # Seçilen motoru belirtilen miktarda çalıştır
+        if selected_motor == "Motor1":
+            self.control_motor1(motor_value)
+        elif selected_motor == "Motor2":
+            self.control_motor2(motor_value)
+        elif selected_motor == "Motor3":
+            self.control_motor3(motor_value)
+        # Motor işlemi bitene kadar Arduino'dan "DONE" mesajını bekle
+        while True:
+            done_message = self.ser.readline().decode('utf-8').strip()
+            if done_message == "DONE":
+                print("Motor işlemi tamamlandı.")
+                break
+        # Motor durduktan sonra PH ölçümü komutunu gönder ve sürekli oku
+        self.ser.write(b"PH_MEASURE\n")
+        time.sleep(0.5)
+        # PH verisini sürekli oku ve ekrana yaz
+        while True:
+            ph_data = self.ser.readline().decode('utf-8').strip()
+            if ph_data.startswith("PH:"):
+                try:
+                    ph_value = float(ph_data.split(": ")[1])
+                    scene = QGraphicsScene()
+                    scene.addText(f"pH: {ph_value:.2f}")
+                    self.ph_output.setScene(scene)
+                    print(f"pH alındı: {ph_value}")
+                except Exception as e:
+                    print(f"pH verisi hatalı: {ph_data}, hata: {e}")
+            QApplication.processEvents()
+            # Döngüyü durdurmak için bir mekanizma eklenebilir (örneğin bir buton ile)
+            # Şimdilik sonsuz döngüde sürekli okuma
+            time.sleep(0.5)
+    
 ########
     #Dev
     def control_motor1(self, ml_value):
