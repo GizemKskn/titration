@@ -646,6 +646,7 @@ class MyApp(QMainWindow):
                     self.formul_water_pump_input_2.setText(parts[14])
                     self.formul_selenoid_valve_input_2.setText(parts[15])
                     self.math_formul_input.setText(parts[16])
+                    self.apply_formula(parts)
                     break
         self.status_label.setText("Formül yüklendi.")
 
