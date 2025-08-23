@@ -589,7 +589,6 @@ class MyApp(QMainWindow):
             self.formul_motor3_input.text(),
             self.formul_motor3_preload_input.text(),
             self.formul_air_pump_input.text(),  # Main formül hava
-            self.formul_selenoid_valve_input.text(),
             self.formul_cokme_valve_input.text(),
             self.formul_target_input_R.text(),
             self.formul_target_input_G.text(),
@@ -597,9 +596,11 @@ class MyApp(QMainWindow):
             self.formul_threshold_input_R.text(),
             self.formul_threshold_input_G.text(),
             self.formul_threshold_input_B.text(),
+            #
             self.formul_air_pump_input_2.text(),  # Temizlik hava
             self.formul_water_pump_input_2.text(),
             self.formul_selenoid_valve_input_2.text(),
+            #
             self.math_formul_input.text()  # Math formül
         ]
         # Formül dosyasını oku, aynı isim varsa sil
@@ -634,8 +635,6 @@ class MyApp(QMainWindow):
                     self.formul_motor3_input.setText(parts[3])
                     self.formul_motor3_preload_input.setText(parts[4])
                     self.formul_air_pump_input.setText(parts[5])
-                    self.formul_water_pump_input.setText(parts[6])
-                    self.formul_selenoid_valve_input.setText(parts[7])
                     self.formul_cokme_valve_input.setText(parts[8])
                     self.formul_target_input_R.setText(parts[9])
                     self.formul_target_input_G.setText(parts[10])
