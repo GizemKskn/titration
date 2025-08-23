@@ -51,7 +51,7 @@
        <string notr="true">font-size: 12px;</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>6</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1337,7 +1337,7 @@ background-color: blue;</string>
       </widget>
       <widget class="QWidget" name="tab_dev">
        <attribute name="title">
-        <string>Developer Page</string>
+        <string>Geliştirici </string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_17">
         <item row="0" column="0">
@@ -2167,13 +2167,13 @@ background-color: green;</string>
       </widget>
       <widget class="QWidget" name="tab_formul">
        <attribute name="title">
-        <string>Formul</string>
+        <string>Formül</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_20">
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -3624,7 +3624,7 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QWidget" name="tab_density">
        <attribute name="title">
-        <string>Density</string>
+        <string>Yoğunluk</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_25">
         <item row="0" column="0">
@@ -3974,6 +3974,11 @@ QComboBox {
          </layout>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>Bulanıklık</string>
+       </attribute>
       </widget>
      </widget>
     </item>

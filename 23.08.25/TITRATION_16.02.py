@@ -84,8 +84,7 @@ class CameraThread(QThread):
     def capture_image(self):
         try:
             frame = self.picam2.capture_array()
-            # BGR'den RGB'ye dönüştür
-            frame = frame[:, :, ::-1]  # BGR'yi RGB'ye çevir
+
             raw_data = frame.tobytes()
             height, width, channel = frame.shape
             bytes_per_line = 3 * width
@@ -273,7 +272,7 @@ class MyApp(QMainWindow):
 
     def update_graphics_view(self, qImg, raw_data): 
         self.scene.clear()
-        self.scene.addPixmap(QPixmap.fromImage(qImg))
+        self.scene.addPixmap(QPixmap.fromImage(qImg.rgbSwapped()))
         self.graphics_view_1.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio) 
         self.graphics_view_2.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio) 
         self.graphics_view_3.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
