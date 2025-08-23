@@ -1,3 +1,4 @@
+from PyQt5.QtCore import pyqtSignal
 import sys
 import socket
 import serial
@@ -130,6 +131,50 @@ class TcpClientThread(QThread):
 
 
 class MyApp(QMainWindow):
+    class PhWorker(QRunnable):
+        def __init__(self, parent, port_name, selected_motor, motor_value):
+            super().__init__()
+            self.parent = parent
+            self.port_name = port_name
+            self.selected_motor = selected_motor
+            self.motor_value = motor_value
+
+        def run(self):
+            import serial, time
+            ser_ph = serial.Serial(self.port_name, 9600, timeout=1)
+            time.sleep(1)
+            ser_ph.reset_input_buffer()
+            # Motoru çalıştır
+            if self.selected_motor == "Motor1":
+                self.parent.control_motor1(self.motor_value)
+            elif self.selected_motor == "Motor2":
+                self.parent.control_motor2(self.motor_value)
+            elif self.selected_motor == "Motor3":
+                self.parent.control_motor3(self.motor_value)
+            # Motor işlemi bitene kadar Arduino'dan "DONE" mesajını bekle
+            while True:
+                done_message = ser_ph.readline().decode('utf-8').strip()
+                if done_message == "DONE":
+                    break
+            # Motor durduktan sonra PH ölçümü komutunu gönder ve sürekli oku
+            ser_ph.write(b"PH_MEASURE\n")
+            time.sleep(0.5)
+            # PH verisini sürekli oku ve ekrana yaz
+            while True:
+                ph_data = ser_ph.readline().decode('utf-8').strip()
+                if ph_data.startswith("PH:"):
+                    try:
+                        ph_value = float(ph_data.split(": ")[1])
+                        self.parent.update_ph_output(ph_value)
+                    except Exception as e:
+                        print(f"pH verisi hatalı: {ph_data}, hata: {e}")
+                # Döngüyü durdurmak için bir mekanizma eklenebilir
+                time.sleep(0.5)
+            ser_ph.close()
+    def update_ph_output(self, ph_value):
+        scene = QGraphicsScene()
+        scene.addText(f"pH: {ph_value:.2f}")
+        self.ph_output.setScene(scene)
     def __init__(self):
         super().__init__()                                                                                                                                                                                                                  
 
@@ -786,55 +831,19 @@ class MyApp(QMainWindow):
         port_ph, ok_ph = QtWidgets.QInputDialog.getItem(self, "Select COM Port for pH", "Available COM Ports:", port_list, 0, False)
         if ok_ph and port_ph:
             port_name_ph = port_ph.split(' - ')[0]
-            ser_ph = serial.Serial(port_name_ph, 9600, timeout=1)
-            print(f"pH COM connected: {port_name_ph}")
         else:
             print("No port selected for pH, using default /dev/ttyACM0")
-            ser_ph = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+            port_name_ph = '/dev/ttyACM0'
 
-        time.sleep(1)
-        ser_ph.reset_input_buffer()
-        # Motor seçimini ve miktarını al
         selected_motor = self.motor_combobox_2.currentText()
         motor_value = self.ph_motor_input.text()
         try:
             motor_value = float(motor_value.replace(',', '.')) if motor_value else 1
         except ValueError:
             motor_value = 1
-        # Seçilen motoru belirtilen miktarda çalıştır
-        if selected_motor == "Motor1":
-            self.control_motor1(motor_value)
-        elif selected_motor == "Motor2":
-            self.control_motor2(motor_value)
-        elif selected_motor == "Motor3":
-            self.control_motor3(motor_value)
-        # Motor işlemi bitene kadar Arduino'dan "DONE" mesajını bekle
-        while True:
-            done_message = ser_ph.readline().decode('utf-8').strip()
-            if done_message == "DONE":
-                print("Motor işlemi tamamlandı.")
-                break
-        # Motor durduktan sonra PH ölçümü komutunu gönder ve sürekli oku
-        ser_ph.write(b"PH_MEASURE\n")
-        time.sleep(0.5)
-        # PH verisini sürekli oku ve ekrana yaz
-        while True:
-            ph_data = ser_ph.readline().decode('utf-8').strip()
-            if ph_data.startswith("PH:"):
-                try:
-                    ph_value = float(ph_data.split(": ")[1])
-                    scene = QGraphicsScene()
-                    scene.addText(f"pH: {ph_value:.2f}")
-                    self.ph_output.setScene(scene)
-                    print(f"pH alındı: {ph_value}")
-                except Exception as e:
-                    print(f"pH verisi hatalı: {ph_data}, hata: {e}")
-            QApplication.processEvents()
-            # Döngüyü durdurmak için bir mekanizma eklenebilir (örneğin bir buton ile)
-            # Şimdilik sonsuz döngüde sürekli okuma
-            time.sleep(0.5)
-        # İşlem bitince portu kapat
-        ser_ph.close()
+
+        worker = self.PhWorker(self, port_name_ph, selected_motor, motor_value)
+        QThreadPool.globalInstance().start(worker)
     
 ########
     #Dev
