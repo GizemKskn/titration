@@ -813,6 +813,7 @@ class MyApp(QMainWindow):
         # PH verisini sürekli oku ve ekrana yaz
         while True:
             ph_data = self.ser.readline().decode('utf-8').strip()
+            print(f"Arduino'dan gelen veri: {ph_data}")  # Gelen veriyi ekrana yaz
             if ph_data.startswith("PH:"):
                 try:
                     ph_value = float(ph_data.split(": ")[1])
