@@ -237,8 +237,8 @@ class MyApp(QMainWindow):
         self.clean_button.clicked.connect(self.clean_system)
 
         # MATH FORMÜL PAGE
-        self.math_formul_save_button.clicked.connect(self.save_math_formul)
-        self.math_formul_load_button.clicked.connect(self.load_math_formul)
+        self.math_formul_save_button.clicked.connect(self.math_formul_save_button)
+        self.math_formul_load_button.clicked.connect(self.math_formul_load_button)
 
         #DEV PAGE
 
