@@ -237,8 +237,8 @@ class MyApp(QMainWindow):
         self.clean_button.clicked.connect(self.clean_system)
 
         # MATH FORMÜL PAGE
-        self.math_formul_save_button.clicked.connect(self.math_formul_save_button)
-        self.math_formul_load_button.clicked.connect(self.math_formul_load_button)
+        self.math_formul_save_button.clicked.connect(self.save_math_formul)
+        self.math_formul_load_button.clicked.connect(self.load_math_formul)
 
         #DEV PAGE
 
@@ -863,99 +863,99 @@ class MyApp(QMainWindow):
 
 ##########
 
-def calculate_math_formul(self):
-    """Math formülü hesapla"""
-    try:
-        # Numune miktarını al
-        t = float(self.sample_input.text() or 0)
-        if t <= 0:
-            print("Geçerli numune miktarı girilmemiş")
+    def calculate_math_formul(self):
+        """Math formülü hesapla"""
+        try:
+            # Numune miktarını al
+            t = float(self.sample_input.text() or 0)
+            if t <= 0:
+                print("Geçerli numune miktarı girilmemiş")
+                return None
+
+            # Total titrant miktarını hesapla
+            S = self.calculate_titrant_total()
+
+            # Sabit değerleri kullan
+            N = self.math_constants["N"]
+            F = self.math_constants["F"]
+            
+            # Formaldehit formülü için hesaplama
+            result = (S * F * N * 3) / t
+            
+            # Math formül tabındaki sonucu göster
+            scene = QGraphicsScene()
+            scene.addText(f"% CH2O = {result:.2f}")
+            self.math_formul_output.setScene(scene)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Formül hesaplanırken hata oluştu: {e}")
+            scene = QGraphicsScene()
+            scene.addText(f"Hata: {str(e)}")
+            self.math_formul_output.setScene(scene)
             return None
 
-        # Total titrant miktarını hesapla
-        S = self.calculate_titrant_total()
-
-        # Sabit değerleri kullan
-        N = self.math_constants["N"]
-        F = self.math_constants["F"]
-        
-        # Formaldehit formülü için hesaplama
-        result = (S * F * N * 3) / t
-        
-        # Math formül tabındaki sonucu göster
-        scene = QGraphicsScene()
-        scene.addText(f"% CH2O = {result:.2f}")
-        self.math_formul_output.setScene(scene)
-        
-        return result
-        
-    except Exception as e:
-        print(f"Formül hesaplanırken hata oluştu: {e}")
-        scene = QGraphicsScene()
-        scene.addText(f"Hata: {str(e)}")
-        self.math_formul_output.setScene(scene)
-        return None
-
-def save_math_formul(self):
-    """Math formülü kaydet"""
-    formul = self.math_formul_input.text()
-    if formul:
-        self.math_formul = formul
-        try:
-            with open('math_formulas.txt', 'a') as file:
-                file.write(f"{formul}\n")
-            print("Math formül kaydedildi:", formul)
-            
-            # Formülü hemen hesapla ve göster
-            result = self.calculate_math_formul()
-            if result is not None:
-                scene = QGraphicsScene()
-                scene.addText(f"Formül kaydedildi ve hesaplandı:\n% CH2O = {result:.2f}")
-                self.graphicsView_output.setScene(scene)
-                
-        except Exception as e:
-            print(f"Math formül kaydedilirken hata oluştu: {e}")
-
-def load_math_formul(self):
-    """Kaydedilmiş math formülü yükle"""
-    try:
-        with open('math_formulas.txt', 'r') as file:
-            formulas = file.readlines()
-            if formulas:
-                last_formula = formulas[-1].strip()
-                self.math_formul_input.setText(last_formula)
-                self.math_formul = last_formula
-                print("Math formül yüklendi:", last_formula)
+    def save_math_formul(self):
+        """Math formülü kaydet"""
+        formul = self.math_formul_input.text()
+        if formul:
+            self.math_formul = formul
+            try:
+                with open('math_formulas.txt', 'a') as file:
+                    file.write(f"{formul}\n")
+                print("Math formül kaydedildi:", formul)
                 
                 # Formülü hemen hesapla ve göster
                 result = self.calculate_math_formul()
                 if result is not None:
                     scene = QGraphicsScene()
-                    scene.addText(f"Formül yüklendi ve hesaplandı:\n% CH2O = {result:.2f}")
+                    scene.addText(f"Formül kaydedildi ve hesaplandı:\n% CH2O = {result:.2f}")
                     self.graphicsView_output.setScene(scene)
                     
-    except FileNotFoundError:
-        print("Henüz kaydedilmiş math formül yok.")
-        scene = QGraphicsScene()
-        scene.addText("Henüz kaydedilmiş formül yok.")
-        self.graphicsView_output.setScene(scene)
-    except Exception as e:
-        print(f"Math formül yüklenirken hata oluştu: {e}")
-        scene = QGraphicsScene()
-        scene.addText(f"Hata: {str(e)}")
-        self.graphicsView_output.setScene(scene)
+            except Exception as e:
+                print(f"Math formül kaydedilirken hata oluştu: {e}")
 
-def calculate_titrant_total(self):
-    """Total titrant miktarını hesapla (S değeri)"""
-    try:
-        preload = float(self.formul_motor3_preload_input.text() or 0)
-        motor3_value = float(self.titrant_input.text() or 0)
-        transfer_count = self.successful_tests_count
-        S = preload + (motor3_value * transfer_count)
-        return S
-    except ValueError:
-        print("Titrant hesaplaması için geçerli değerler girilmemiş")
-        return 0
+    def load_math_formul(self):
+        """Kaydedilmiş math formülü yükle"""
+        try:
+            with open('math_formulas.txt', 'r') as file:
+                formulas = file.readlines()
+                if formulas:
+                    last_formula = formulas[-1].strip()
+                    self.math_formul_input.setText(last_formula)
+                    self.math_formul = last_formula
+                    print("Math formül yüklendi:", last_formula)
+                    
+                    # Formülü hemen hesapla ve göster
+                    result = self.calculate_math_formul()
+                    if result is not None:
+                        scene = QGraphicsScene()
+                        scene.addText(f"Formül yüklendi ve hesaplandı:\n% CH2O = {result:.2f}")
+                        self.graphicsView_output.setScene(scene)
+                        
+        except FileNotFoundError:
+            print("Henüz kaydedilmiş math formül yok.")
+            scene = QGraphicsScene()
+            scene.addText("Henüz kaydedilmiş formül yok.")
+            self.graphicsView_output.setScene(scene)
+        except Exception as e:
+            print(f"Math formül yüklenirken hata oluştu: {e}")
+            scene = QGraphicsScene()
+            scene.addText(f"Hata: {str(e)}")
+            self.graphicsView_output.setScene(scene)
+
+    def calculate_titrant_total(self):
+        """Total titrant miktarını hesapla (S değeri)"""
+        try:
+            preload = float(self.formul_motor3_preload_input.text() or 0)
+            motor3_value = float(self.titrant_input.text() or 0)
+            transfer_count = self.successful_tests_count
+            S = preload + (motor3_value * transfer_count)
+            return S
+        except ValueError:
+            print("Titrant hesaplaması için geçerli değerler girilmemiş")
+            return 0
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
