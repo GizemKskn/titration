@@ -206,19 +206,20 @@ class MyApp(QMainWindow):
         self.tcp_thread.start()
         self.camera_thread.start()
 
-        # Sayfa geçiş butonları 
-        page_buttons = [
-            ("olcum_pushButton", 1),
-            ("gelistirici_pushButton", 2),
-            ("formul_pushButton", 3),
-            ("yogunluk_pushButton", 4),
-            ("ph_pushButton", 5),
-            ("bulaniklik_pushButton", 6),
-        ]
-        for btn_name, page_index in page_buttons:
-            btn = getattr(self, btn_name, None)
-            if btn is not None:
-                btn.clicked.connect(lambda checked, idx=page_index: self.stackedWidget.setCurrentIndex(idx))
+
+        # Sayfa geçiş butonları (UI’daki isimlere göre)
+        if hasattr(self, "olcum_pushButton") and hasattr(self, "stackedWidget"):
+            self.olcum_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+        if hasattr(self, "gelistirici_pushButton") and hasattr(self, "stackedWidget"):
+            self.gelistirici_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
+        if hasattr(self, "formul_pushButton") and hasattr(self, "stackedWidget"):
+            self.formul_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(3))
+        if hasattr(self, "yogunluk_pushButton") and hasattr(self, "stackedWidget"):
+            self.yogunluk_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(4))
+        if hasattr(self, "ph_pushButton") and hasattr(self, "stackedWidget"):
+            self.ph_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(5))
+        if hasattr(self, "bulaniklik_pushButton") and hasattr(self, "stackedWidget"):
+            self.bulaniklik_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(6))
 
         self.loadFormulas()
 
