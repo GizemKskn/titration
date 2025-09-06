@@ -1,273 +1,247 @@
 #include <Arduino.h>
 
-// ================== HX711 (kütüphanesiz) ==================
-#define HX_DOUT_ANALOG_PIN A7   // A7 sadece analog -> analogRead ile örnekleyeceğiz
-#define HX_SCK_PIN         A5   // SCK dijital çıkış olarak kullanılır
+/* ===================== DONANIM HARİTASI (DEĞİŞMEZ) =====================
+ * HX711  : DOUT = A7 (analog okunacak), SCK = A5 (dijital çıkış)
+ * Stepper1: STEP=11, DIR=10, EN=A0
+ * Stepper2: STEP=8,  DIR=9,  EN=A1
+ * Stepper3: STEP=6,  DIR=4,  EN=A2
+ * Air motor: D5,  Water motor: D7,  Solenoid: D2,  Camera: D3
+ * pH sensörü: PH_PIN (varsayılan A3; PCB’de farklıysa yalnızca bu satırı değiştir)
+ * ====================================================================== */
 
-// Kalibrasyon parametreleri
-// raw_gram = (raw_counts - tare_offset) / scale_factor
-// Bu ikisini kendi kalibrasyonuna göre güncelle.
-long   tare_offset   = 0;       // ham sayaç ofseti (tare sonrası kaydedilecek)
-float  scale_factor  = 936.57f; // sayaç/gram oranı (örnek değer, kalibre et)
+#define HX_DOUT  A7
+#define HX_SCK   A5
 
-// ================== Step motor pinleri ====================
-const int stepPin1   = 11;
-const int dirPin1    = 10;
-const int enablePin1 = A0;
+// ---- pH sensörü ----
+#define PH_PIN     A12          // PCB’de pH hangi analog pine geldiyse onu yaz
+#define PH_OFFSET  (-1.00f)    // kalibrasyon ofsetin
 
-const int stepPin2   = 8;
-const int dirPin2    = 9;
-const int enablePin2 = A1;
+// ---- Step & IO pinleri ----
+const int stepPin1 = 11, dirPin1 = 10, enablePin1 = A0;
+const int stepPin2 = 8,  dirPin2  = 9,  enablePin2 = A1;
+const int stepPin3 = 6,  dirPin3  = 4,  enablePin3 = A2;
 
-const int stepPin3   = 6;
-const int dirPin3    = 4;
-const int enablePin3 = A2;
-
-// ================== Diğer çıkışlar ========================
 const int airMotorPin   = 5;
 const int cameraPin     = 3;
 const int waterMotorPin = 7;
 const int selenoid      = 2;
 
-// ================== pH Sensör =============================
-#define PH_OFFSET   -1.00       // senin istediğin ofset
-#define PH_PIN      A3          // pH analog çıkışı
-const int PH_LED_PIN = 13;      // pH ölçüm bildirimi için LED
+// =================== Seri Çıkış Kontrolü ===================
+bool VERBOSE = false;                 // default sessiz
+inline void vlog(const char* s){ if (VERBOSE) Serial.println(s); }
 
-// pH okuma buffer
-unsigned long int avgValue;
-int buf[10], temp;
+// =================== HX711 (kütüphanesiz) ==================
+// gram = (raw - tare_offset) / scale_factor
+long  tare_offset  = 0;              // TARE ile ayarlanır (açılışta ham okunup atanır)
+float scale_factor = 936.57f;        // kendi kalibrasyonunla güncelle
 
-// ================== Yardımcılar ===========================
-static inline bool hx711IsReady() {
-  // HX711 hazır olduğunda DOUT LOW olur.
-  // A7’yi analog okuyoruz, ~2.5V eşiği kullanalım.
-  int v = analogRead(HX_DOUT_ANALOG_PIN);
-  return v < 512; // LOW ~ 0V => <512
+static inline void hxSckHigh(){ digitalWrite(HX_SCK, HIGH); }
+static inline void hxSckLow() { digitalWrite(HX_SCK, LOW);  }
+
+// HX711 hazır (DOUT LOW) kontrolü – A7 analog olduğundan eşik kullanıyoruz
+bool hxReady() {
+  int v = analogRead(HX_DOUT);       // 0..1023
+  return v < 512;                    // ~LOW
 }
 
-long readHX711Raw(uint8_t gain_pulses = 1) {
-  // Varsayılan: Channel A, gain 128 için 1 ekstra puls.
-  // SCK LOW başla
-  pinMode(HX_SCK_PIN, OUTPUT);
-  digitalWrite(HX_SCK_PIN, LOW);
-
-  // Data hazır olana kadar bekle (DOUT LOW)
+// 24‑bit ham okuma (Channel A, gain 128 → 1 ekstra clock)
+long hxReadRaw() {
+  // hazır olana kadar bekle (timeout 1 sn)
   unsigned long t0 = millis();
-  while (!hx711IsReady()) {
-    if (millis() - t0 > 1000) {
-      // 1 sn içinde hazır olmadı -> hata gibi ele al
-      return 0;
-    }
+  while (!hxReady()) {
+    if (millis() - t0 > 1000) return 0;   // zaman aşımı
     delay(1);
   }
 
-  // 24 bit oku (MSB->LSB)
   long value = 0;
   for (int i = 0; i < 24; i++) {
-    // SCK HIGH: HX711 bir bit hazırlar
-    digitalWrite(HX_SCK_PIN, HIGH);
-    delayMicroseconds(2);
+    hxSckHigh();
+    delayMicroseconds(3);
 
-    // DOUT seviyesi oku (analogRead ile)
-    int a = analogRead(HX_DOUT_ANALOG_PIN);
+    // DOUT seviyesini oku (analog eşiğe göre dijitalleştir)
+    int a = analogRead(HX_DOUT);
     uint8_t bit = (a > 512) ? 1 : 0;
     value = (value << 1) | bit;
 
-    // SCK LOW
-    digitalWrite(HX_SCK_PIN, LOW);
-    delayMicroseconds(2);
+    hxSckLow();
+    delayMicroseconds(3);
   }
 
-  // Gain seçimi için ekstra clock darbeleri (A,128 => 1 pulse)
-  for (uint8_t g = 0; g < gain_pulses; g++) {
-    digitalWrite(HX_SCK_PIN, HIGH);
-    delayMicroseconds(2);
-    digitalWrite(HX_SCK_PIN, LOW);
-    delayMicroseconds(2);
-  }
+  // Gain seçimi (A,128) için 1 ekstra clock
+  hxSckHigh(); delayMicroseconds(3);
+  hxSckLow();  delayMicroseconds(3);
 
-  // 24-bit iki's tamamından 32-bit signed’a dönüştür
-  if (value & 0x800000) {
-    value |= ~0xFFFFFFL; // işaret uzat
-  }
-
+  // 24‑bit iki's tamamını 32‑bit signed’a genişlet
+  if (value & 0x800000L) value |= ~0xFFFFFFL;
   return value;
 }
 
 float getWeight() {
-  // 5 ölçüm ortalaması (gürültüyü azaltır)
-  const int N = 5;
+  const int N = 5;     // ortalama (gürültüyü azaltır)
   long sum = 0;
-  for (int i = 0; i < N; i++) {
-    long raw = readHX711Raw(1);  // A kanal, gain128
-    sum += raw;
-  }
+  for (int i = 0; i < N; i++) sum += hxReadRaw();
   long raw_avg = sum / N;
-
-  // gram cinsinden
-  float weight = (raw_avg - tare_offset) / scale_factor;
-  return weight;
+  float w = (raw_avg - tare_offset) / scale_factor;
+  return w;
 }
 
+// =================== pH Ölçümü ===================
 float getPH() {
-  for (int i = 0; i < 10; i++) {
-    buf[i] = analogRead(PH_PIN);
-    delay(10);
-  }
+  const int N = 20;
+  int buf[N];
+  for (int i = 0; i < N; i++) { buf[i] = analogRead(PH_PIN); delay(8); }
 
-  // Küçükten büyüğe sırala
-  for (int i = 0; i < 9; i++) {
-    for (int j = i + 1; j < 10; j++) {
-      if (buf[i] > buf[j]) {
-        temp = buf[i]; buf[i] = buf[j]; buf[j] = temp;
-      }
-    }
-  }
+  // sıralama (küçükten büyüğe)
+  for (int i = 0; i < N-1; i++)
+    for (int j = i+1; j < N; j++)
+      if (buf[i] > buf[j]) { int t = buf[i]; buf[i] = buf[j]; buf[j] = t; }
 
-  // Ortadaki 6 değerin ortalaması
-  unsigned long sum = 0;
-  for (int i = 2; i < 8; i++) sum += buf[i];
+  // ortadaki 10 değerin ortalaması
+  long sum = 0;
+  for (int i = 5; i < 15; i++) sum += buf[i];
+  float avg = (float)sum / 10.0f;
 
-  // Voltaja çevir -> pH (sensör örnek formülü)
-  float v = (float)sum * 5.0 / 1024.0 / 6.0; // ortalama voltaj
-  float phValue = 3.5f * v + PH_OFFSET;
-
-  // Kısa LED bildirimi
-  digitalWrite(PH_LED_PIN, HIGH);
-  delay(60);
-  digitalWrite(PH_LED_PIN, LOW);
-
-  return phValue;
+  float v  = avg * (5.0f / 1023.0f); // volt
+  float ph = 3.5f * v + PH_OFFSET;   // basit doğrusal yaklaşım
+  return ph;
 }
 
-// ================== Hareket ===============================
+// =================== Step Motor Sürüşü ===================
 void moveStepper(int pin, int directionPin, int enablePin, long steps) {
   digitalWrite(enablePin, LOW);
   digitalWrite(directionPin, steps >= 0 ? HIGH : LOW);
 
   unsigned long n = (unsigned long)abs(steps);
   for (unsigned long k = 0; k < n; k++) {
-    digitalWrite(pin, HIGH);
-    delayMicroseconds(800);
-    digitalWrite(pin, LOW);
-    delayMicroseconds(800);
+    digitalWrite(pin, HIGH);  delayMicroseconds(800);
+    digitalWrite(pin, LOW);   delayMicroseconds(800);
   }
-
   digitalWrite(enablePin, HIGH);
-  delay(50);
-  Serial.println("DONE");
+  delay(40);
+  Serial.println("DONE");      // tek satır yanıt
 }
 
-// ================== Komut Yorumlayıcı =====================
+// =================== Komut Yorumlayıcı ===================
 void executeCommand(String command) {
   command.trim();
 
+  // ----- yönetim -----
+  if (command == "VERBOSE_ON")  { VERBOSE = true;  Serial.println("OK"); return; }
+  if (command == "VERBOSE_OFF") { VERBOSE = false; Serial.println("OK"); return; }
+  if (command == "PING")        { Serial.println("PONG"); return; }
+
+  // ----- step / IO -----
   if (command.startsWith("MOVE1")) {
     long steps = command.substring(6).toInt();
-    moveStepper(stepPin1, dirPin1, enablePin1, steps);
-
-  } else if (command.startsWith("MOVE2")) {
-    long steps = command.substring(6).toInt();
-    moveStepper(stepPin2, dirPin2, enablePin2, steps);
-
-  } else if (command.startsWith("MOVE3")) {
-    long steps = command.substring(6).toInt();
-    moveStepper(stepPin3, dirPin3, enablePin3, steps);
-
-  } else if (command == "AIR_ON") {
-    digitalWrite(airMotorPin, HIGH);  Serial.println("DONE");
-
-  } else if (command == "AIR_OFF") {
-    digitalWrite(airMotorPin, LOW);   Serial.println("DONE");
-
-  } else if (command.startsWith("AIR_DUR")) {
-    long duration = command.substring(8).toInt();
-    digitalWrite(airMotorPin, HIGH); delay(duration);
-    digitalWrite(airMotorPin, LOW);  Serial.println("DONE");
-
-  } else if (command == "WATER_ON") {
-    digitalWrite(waterMotorPin, HIGH);  Serial.println("DONE");
-
-  } else if (command == "WATER_OFF") {
-    digitalWrite(waterMotorPin, LOW);   Serial.println("DONE");
-
-  } else if (command.startsWith("WATER_DUR")) {
-    long duration = command.substring(10).toInt();
-    digitalWrite(waterMotorPin, HIGH); delay(duration);
-    digitalWrite(waterMotorPin, LOW);  Serial.println("DONE");
-
-  } else if (command == "VALVE_ON") {
-    digitalWrite(selenoid, HIGH);   Serial.println("DONE");
-
-  } else if (command == "VALVE_OFF") {
-    digitalWrite(selenoid, LOW);    Serial.println("DONE");
-
-  } else if (command.startsWith("VALVE_DUR")) {
-    long duration = command.substring(10).toInt();
-    digitalWrite(selenoid, HIGH); delay(duration);
-    digitalWrite(selenoid, LOW);   Serial.println("DONE");
-
-  } else if (command.startsWith("COKME_DUR")) {
-    long duration = command.substring(10).toInt();
-    delay(duration);               Serial.println("DONE");
-
-  } else if (command == "CAMERA_TRIG") {
-    digitalWrite(cameraPin, HIGH); delay(100);
-    digitalWrite(cameraPin, LOW);  Serial.println("DONE");
-
-  } else if (command == "WEIGHT_MEASURE") {
-    float w = getWeight();
-    Serial.print("Weight: ");
-    Serial.println(w, 3);
-
-  } else if (command == "PH_MEASURE") {
-    float p = getPH();
-    Serial.print("pH: ");
-    Serial.println(p, 2);
+    moveStepper(stepPin1, dirPin1, enablePin1, steps); return;
   }
+  if (command.startsWith("MOVE2")) {
+    long steps = command.substring(6).toInt();
+    moveStepper(stepPin2, dirPin2, enablePin2, steps); return;
+  }
+  if (command.startsWith("MOVE3")) {
+    long steps = command.substring(6).toInt();
+    moveStepper(stepPin3, dirPin3, enablePin3, steps); return;
+  }
+
+  if (command == "AIR_ON")   { digitalWrite(airMotorPin, HIGH);  Serial.println("DONE"); return; }
+  if (command == "AIR_OFF")  { digitalWrite(airMotorPin, LOW);   Serial.println("DONE"); return; }
+  if (command.startsWith("AIR_DUR")) {
+    long ms = command.substring(8).toInt();
+    digitalWrite(airMotorPin, HIGH); delay(ms);
+    digitalWrite(airMotorPin, LOW);  Serial.println("DONE"); return;
+  }
+
+  if (command == "WATER_ON")  { digitalWrite(waterMotorPin, HIGH); Serial.println("DONE"); return; }
+  if (command == "WATER_OFF") { digitalWrite(waterMotorPin, LOW);  Serial.println("DONE"); return; }
+  if (command.startsWith("WATER_DUR")) {
+    long ms = command.substring(10).toInt();
+    digitalWrite(waterMotorPin, HIGH); delay(ms);
+    digitalWrite(waterMotorPin, LOW);  Serial.println("DONE"); return;
+  }
+
+  if (command == "VALVE_ON")  { digitalWrite(selenoid, HIGH); Serial.println("DONE"); return; }
+  if (command == "VALVE_OFF") { digitalWrite(selenoid, LOW);  Serial.println("DONE"); return; }
+  if (command.startsWith("VALVE_DUR")) {
+    long ms = command.substring(10).toInt();
+    digitalWrite(selenoid, HIGH); delay(ms);
+    digitalWrite(selenoid, LOW);  Serial.println("DONE"); return;
+  }
+
+  if (command.startsWith("COKME_DUR")) { long ms = command.substring(10).toInt(); delay(ms); Serial.println("DONE"); return; }
+
+  if (command == "CAMERA_TRIG") {
+    digitalWrite(cameraPin, HIGH); delay(100);
+    digitalWrite(cameraPin, LOW);  Serial.println("DONE"); return;
+  }
+
+  // ----- ölçümler & kalibrasyon -----
+  if (command == "WEIGHT_MEASURE") {
+    float w = getWeight();
+    Serial.print("Weight: "); Serial.println(w, 3);  // Python tarafı "Weight: " bekliyor
+    return;
+  }
+  if (command == "RAW_READ")       { long r = hxReadRaw();  Serial.print("RAW:");    Serial.println(r);   return; }
+  if (command == "TARE")           { long r = hxReadRaw();  tare_offset = r;         Serial.print("TARE:"); Serial.println(tare_offset); return; }
+  if (command.startsWith("SET_SCALE")) {
+    float s = command.substring(9).toFloat();
+    if (s > 0.001f) { scale_factor = s; Serial.print("SCALE:"); Serial.println(scale_factor, 3); }
+    else Serial.println("ERR");
+    return;
+  }
+  if (command.startsWith("SET_TARE")) {
+    long t = command.substring(8).toInt();
+    tare_offset = t; Serial.print("TARE:"); Serial.println(tare_offset); return;
+  }
+  if (command == "PH_MEASURE") {
+    float p = getPH();
+    Serial.print("PH: "); Serial.println(p, 2);      // Python tarafı "PH: " bekliyor
+    return;
+  }
+
+  // ----- test akışını kapatma için uyumluluk -----
+  if (command == "COMPLETE_TEST") {
+    // Herhangi bir sayaç tutmuyoruz; UI beklemesin diye DONE döndürüyoruz
+    Serial.println("DONE");
+    return;
+  }
+
+  // tanınmayan komut
+  Serial.println("ERR");
 }
 
-// ================== Kurulum & Döngü =======================
+// =================== setup / loop ===================
 void setup() {
   Serial.begin(9600);
 
-  // HX711 pin modları
-  pinMode(HX_SCK_PIN, OUTPUT);
-  digitalWrite(HX_SCK_PIN, LOW);
-  // A7 analog giriş, mod ayarı gerektirmez
+  // HX711 SCK
+  pinMode(HX_SCK, OUTPUT);
+  hxSckLow();
 
-  // Step motorlar
+  // Step ve IO pinleri
   pinMode(stepPin1, OUTPUT); pinMode(dirPin1, OUTPUT); pinMode(enablePin1, OUTPUT);
   pinMode(stepPin2, OUTPUT); pinMode(dirPin2, OUTPUT); pinMode(enablePin2, OUTPUT);
   pinMode(stepPin3, OUTPUT); pinMode(dirPin3, OUTPUT); pinMode(enablePin3, OUTPUT);
 
-  // Diğer pinler
   pinMode(airMotorPin, OUTPUT);
   pinMode(waterMotorPin, OUTPUT);
   pinMode(selenoid, OUTPUT);
   pinMode(cameraPin, OUTPUT);
 
-  // Başlangıç
   digitalWrite(enablePin1, HIGH);
   digitalWrite(enablePin2, HIGH);
   digitalWrite(enablePin3, HIGH);
   digitalWrite(selenoid, LOW);
   digitalWrite(cameraPin, LOW);
 
-  // pH LED
-  pinMode(PH_LED_PIN, OUTPUT);
-  digitalWrite(PH_LED_PIN, LOW);
-
-  // İlk tara (opsiyonel): kaba tare almak istersen burada bir kez oku
-  long raw0 = readHX711Raw(1);
-  tare_offset = raw0;   // boşken çağırdıysan ham değeri ofset yap
-  Serial.println("Sistem hazir.");
+  // İlk kaba TARE (boş kefedeyken)
+  tare_offset = hxReadRaw();
+  // Başlangıçta serial'a mesaj basmıyoruz (UI kasmasın)
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    String command = Serial.readStringUntil('\n');
-    executeCommand(command);
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    executeCommand(cmd);
   }
 }
