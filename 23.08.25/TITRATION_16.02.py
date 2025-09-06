@@ -207,14 +207,18 @@ class MyApp(QMainWindow):
         self.camera_thread.start()
 
         # Sayfa geçiş butonları (UI’daki isimlere göre)
-        if hasattr(self, "pushButton"):
+        if hasattr(self, "olcum_pushButton"):
             self.pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
-        if hasattr(self, "pushButton_2"):
-            self.pushButton_2.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(4))
-        if hasattr(self, "pushButton_3"):
+        if hasattr(self, "gelistirici_pushButton"):
+            self.pushButton_2.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
+        if hasattr(self, "formul_pushButton"):
             self.pushButton_3.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(3))
-        if hasattr(self, "pushButton_4"):
-            self.pushButton_4.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
+        if hasattr(self, "yogunluk_pushButton"):
+            self.pushButton_4.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(4))
+        if hasattr(self, "ph_pushButton"):
+            self.pushButton_5.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(5))
+        if hasattr(self, "bulaniklik_pushButton"):
+            self.pushButton_6.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(6))
 
         self.loadFormulas()
 
