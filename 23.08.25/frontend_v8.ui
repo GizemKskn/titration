@@ -51,7 +51,7 @@
        <string notr="true">font-size: 12px;</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>6</number>
       </property>
       <property name="iconSize">
        <size>
@@ -3833,7 +3833,7 @@ QComboBox {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_4">
+      <widget class="QWidget" name="tab_ph">
        <attribute name="title">
         <string>PH Tayin</string>
        </attribute>
@@ -3993,7 +3993,7 @@ QComboBox {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_5">
+      <widget class="QWidget" name="tab_bulaniklik">
        <attribute name="title">
         <string>Bulanıklık</string>
        </attribute>
