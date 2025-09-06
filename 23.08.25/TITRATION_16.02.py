@@ -16,7 +16,6 @@ except Exception:
     libcamera = None
     HAS_PI_CAM = False
 
-
 # ---------------- Yardımcı: güvenli seri gönder/al ----------------
 def normalize_line(s: str) -> str:
     return s.strip()
@@ -694,6 +693,9 @@ class MyApp(QMainWindow):
         if hasattr(self, "sample_input"):    self.sample_input.setText(m1)
         if hasattr(self, "indicator_input"): self.indicator_input.setText(m2)
         if hasattr(self, "titrant_input"):   self.titrant_input.setText(m3)
+        if hasattr(self, "target_input_R"): self.target_input_R.setText(R)
+        if hasattr(self, "target_input_G"): self.target_input_G.setText(G)
+        if hasattr(self, "target_input_B"): self.target_input_B.setText(B)
 
         # Sayısal zaman değişkenleri
         self.formul_air_pump_time       = fnum(air,   5)
