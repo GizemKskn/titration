@@ -160,7 +160,11 @@ class MyApp(QMainWindow):
             print("Klasör içeriği:", [p.name for p in APP_DIR.iterdir()])
             raise FileNotFoundError(f"UI dosyası yok: {ui_path}")
         uic.loadUi(str(ui_path), self)
-
+        
+        # Ana sayfa (tab_main) ile başlat
+        if hasattr(self, "mainPage") and hasattr(self, "tab_main"):
+            self.mainPage.setCurrentWidget(self.tab_main)
+            
         # Durum değişkenleri
         self.rgb_received = False
         self.motor3_working = False
