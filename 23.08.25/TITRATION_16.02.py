@@ -696,7 +696,6 @@ class MyApp(QMainWindow):
         if hasattr(self, "target_input_R"): self.target_input_R.setText(R)
         if hasattr(self, "target_input_G"): self.target_input_G.setText(G)
         if hasattr(self, "target_input_B"): self.target_input_B.setText(B)
-
         # Sayısal zaman değişkenleri
         self.formul_air_pump_time       = fnum(air,   5)
         self.formul_water_pump_time     = fnum(water, 3)
