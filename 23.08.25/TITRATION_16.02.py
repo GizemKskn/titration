@@ -207,19 +207,19 @@ class MyApp(QMainWindow):
         self.camera_thread.start()
 
 
-        # Sayfa geçiş butonları (UI’daki isimlere göre)
-        if hasattr(self, "olcum_pushButton") and hasattr(self, "stackedWidget") and hasattr(self, "tab_measure"):
-            self.olcum_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tab_measure))
-        if hasattr(self, "gelistirici_pushButton") and hasattr(self, "stackedWidget") and hasattr(self, "tab_dev"):
-            self.gelistirici_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tab_dev))
-        if hasattr(self, "formul_pushButton") and hasattr(self, "stackedWidget") and hasattr(self, "tab_formul"):
-            self.formul_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tab_formul))
-        if hasattr(self, "yogunluk_pushButton") and hasattr(self, "stackedWidget") and hasattr(self, "tab_density"):
-            self.yogunluk_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tab_density))
-        if hasattr(self, "ph_pushButton") and hasattr(self, "stackedWidget") and hasattr(self, "tab_ph"):
-            self.ph_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tab_ph))
-        if hasattr(self, "bulaniklik_pushButton") and hasattr(self, "stackedWidget") and hasattr(self, "tab_bulaniklik"):
-            self.bulaniklik_pushButton.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tab_bulaniklik))
+        # Sayfa geçiş butonları (QTabWidget: mainPage)
+        if hasattr(self, "olcum_pushButton") and hasattr(self, "mainPage") and hasattr(self, "tab_measure"):
+            self.olcum_pushButton.clicked.connect(lambda: self.mainPage.setCurrentWidget(self.tab_measure))
+        if hasattr(self, "gelistirici_pushButton") and hasattr(self, "mainPage") and hasattr(self, "tab_dev"):
+            self.gelistirici_pushButton.clicked.connect(lambda: self.mainPage.setCurrentWidget(self.tab_dev))
+        if hasattr(self, "formul_pushButton") and hasattr(self, "mainPage") and hasattr(self, "tab_formul"):
+            self.formul_pushButton.clicked.connect(lambda: self.mainPage.setCurrentWidget(self.tab_formul))
+        if hasattr(self, "yogunluk_pushButton") and hasattr(self, "mainPage") and hasattr(self, "tab_density"):
+            self.yogunluk_pushButton.clicked.connect(lambda: self.mainPage.setCurrentWidget(self.tab_density))
+        if hasattr(self, "ph_pushButton") and hasattr(self, "mainPage") and hasattr(self, "tab_ph"):
+            self.ph_pushButton.clicked.connect(lambda: self.mainPage.setCurrentWidget(self.tab_ph))
+        if hasattr(self, "bulaniklik_pushButton") and hasattr(self, "mainPage") and hasattr(self, "tab_bulaniklik"):
+            self.bulaniklik_pushButton.clicked.connect(lambda: self.mainPage.setCurrentWidget(self.tab_bulaniklik))
 
         self.loadFormulas()
 
