@@ -154,7 +154,7 @@ class MyApp(QMainWindow):
         self.worker = None
 
         # UI'yi mutlak yolla yükle
-        ui_path = APP_DIR / "frontend_main.ui"
+        ui_path = APP_DIR / "frontend_titration_main.ui"
         if not ui_path.exists():
             print("UI bulunamadı:", ui_path)
             print("Klasör içeriği:", [p.name for p in APP_DIR.iterdir()])
