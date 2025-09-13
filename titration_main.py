@@ -415,12 +415,19 @@ class MyApp(QMainWindow):
         if not trg:
             return
         tr, tg, tb = trg
-        thr_r = int(self.formul_threshold_input_R.text() or 20)
-        thr_g = int(self.formul_threshold_input_G.text() or 20)
-        thr_b = int(self.formul_threshold_input_B.text() or 20)
-        ok = (tr - thr_r <= r <= tr + thr_r and
-              tg - thr_g <= g <= tg + thr_g and
-              tb - thr_b <= b <= tb + thr_b)
+
+        # Artı thresholdlar
+        thr_r_plus = int(self.formul_threshold_input_R.text() or 20)
+        thr_g_plus = int(self.formul_threshold_input_G.text() or 20)
+        thr_b_plus = int(self.formul_threshold_input_B.text() or 20)
+        # Eksi thresholdlar
+        thr_r_minus = int(self.formul_threshold_input_R_2.text() or thr_r_plus) if hasattr(self, "formul_threshold_input_R_2") else thr_r_plus
+        thr_g_minus = int(self.formul_threshold_input_G_2.text() or thr_g_plus) if hasattr(self, "formul_threshold_input_G_2") else thr_g_plus
+        thr_b_minus = int(self.formul_threshold_input_B_2.text() or thr_b_plus) if hasattr(self, "formul_threshold_input_B_2") else thr_b_plus
+
+        ok = (tr - thr_r_minus <= r <= tr + thr_r_plus and
+              tg - thr_g_minus <= g <= tg + thr_g_plus and
+              tb - thr_b_minus <= b <= tb + thr_b_plus)
         if ok:
             self.set_status("Hedef RGB’ye ulaşıldı")
             self.complete_test()
@@ -467,10 +474,10 @@ class MyApp(QMainWindow):
             # Sonucu graphicsView_output'a yaz
             if hasattr(self, "graphicsView_output") and self.graphicsView_output is not None:
                 sc = QGraphicsScene()
-                sc.addText(f"Formül Sonucu: {result:.4f}")
+                sc.addText(f"Formül Sonucu: {result:.2f}")
                 self.graphicsView_output.setScene(sc)
             else:
-                print(f"Formül Sonucu: {result:.4f}")
+                print(f"Formül Sonucu: {result:.2f}")
 
             # Tekrar sayısını status_label'a yaz
             if hasattr(self, "status_label") and self.status_label is not None:
@@ -599,13 +606,20 @@ class MyApp(QMainWindow):
         try:
             name = self.formul_name_input.text()
 
-            # Temizlik sekmesi varsa _2, yoksa ana alanlar
             air_txt   = getattr(self, "formul_air_pump_input_2", getattr(self, "formul_air_pump_input", None)).text()
             water_txt = getattr(self, "formul_water_pump_input_2", getattr(self, "formul_water_pump_input", None)).text()
             selen_txt = getattr(self, "formul_selenoid_valve_input_2", getattr(self, "formul_selenoid_valve_input", None)).text()
 
             m4_txt = getattr(self, "formul_motor4_input").text() if hasattr(self, "formul_motor4_input") else "0"
             m5_txt = getattr(self, "formul_motor5_input").text() if hasattr(self, "formul_motor5_input") else "0"
+
+            # Artı ve eksi thresholdlar
+            thrR_plus = self.formul_threshold_input_R.text()
+            thrG_plus = self.formul_threshold_input_G.text()
+            thrB_plus = self.formul_threshold_input_B.text()
+            thrR_minus = self.formul_threshold_input_R_2.text() if hasattr(self, "formul_threshold_input_R_2") else thrR_plus
+            thrG_minus = self.formul_threshold_input_G_2.text() if hasattr(self, "formul_threshold_input_G_2") else thrG_plus
+            thrB_minus = self.formul_threshold_input_B_2.text() if hasattr(self, "formul_threshold_input_B_2") else thrB_plus
 
             data = [
                 name,
@@ -622,9 +636,12 @@ class MyApp(QMainWindow):
                 self.formul_target_input_R.text(),
                 self.formul_target_input_G.text(),
                 self.formul_target_input_B.text(),
-                self.formul_threshold_input_R.text(),
-                self.formul_threshold_input_G.text(),
-                self.formul_threshold_input_B.text(),
+                thrR_plus,
+                thrG_plus,
+                thrB_plus,
+                thrR_minus,
+                thrG_minus,
+                thrB_minus,
                 getattr(self, "math_formul_input").text() if hasattr(self, "math_formul_input") else ""
             ]
 
@@ -676,7 +693,7 @@ class MyApp(QMainWindow):
     # ---- FORMÜL UYGULA (toleranslı) ----
     def apply_formula(self, p):
         """
-        v3 şeması: name,m1,m2,m3,m3_preload,m4,m5,air,water,selenoid,cokme,R,G,B,thrR,thrG,thrB[,math]
+        v3 şeması: name,m1,m2,m3,m3_preload,m4,m5,air,water,selenoid,cokme,R,G,B,thrR+,thrG+,thrB+,thrR-,thrG-,thrB-,math
         Fazla kolonları yok sayar, eksiklerde varsayılan kullanır.
         """
         p = list(p)
@@ -701,7 +718,9 @@ class MyApp(QMainWindow):
         selen= get(9, "1")
         cokme= get(10, "1")
         R, G, B = get(11, "0"), get(12, "0"), get(13, "0")
-        thrR, thrG, thrB = get(14, "5"), get(15, "5"), get(16, "5")
+        thrR_plus, thrG_plus, thrB_plus = get(14, "20"), get(15, "20"), get(16, "20")
+        thrR_minus, thrG_minus, thrB_minus = get(17, "20"), get(18, "20"), get(19, "20")
+        math_formula = get(20, "")
 
         # Formül sekmesi alanları
         if hasattr(self, "formul_name_input"): self.formul_name_input.setText(name)
@@ -712,7 +731,6 @@ class MyApp(QMainWindow):
         if hasattr(self, "formul_motor4_input"): self.formul_motor4_input.setText(m4)
         if hasattr(self, "formul_motor5_input"): self.formul_motor5_input.setText(m5)
 
-        # Temizlik sekmesi varsa oraya, yoksa ana alanlara
         if hasattr(self, "formul_air_pump_input_2"):
             self.formul_air_pump_input_2.setText(air)
         elif hasattr(self, "formul_air_pump_input"):
@@ -734,9 +752,12 @@ class MyApp(QMainWindow):
         self.formul_target_input_R.setText(R)
         self.formul_target_input_G.setText(G)
         self.formul_target_input_B.setText(B)
-        self.formul_threshold_input_R.setText(thrR)
-        self.formul_threshold_input_G.setText(thrG)
-        self.formul_threshold_input_B.setText(thrB)
+        self.formul_threshold_input_R.setText(thrR_plus)
+        self.formul_threshold_input_G.setText(thrG_plus)
+        self.formul_threshold_input_B.setText(thrB_plus)
+        if hasattr(self, "formul_threshold_input_R_2"): self.formul_threshold_input_R_2.setText(thrR_minus)
+        if hasattr(self, "formul_threshold_input_G_2"): self.formul_threshold_input_G_2.setText(thrG_minus)
+        if hasattr(self, "formul_threshold_input_B_2"): self.formul_threshold_input_B_2.setText(thrB_minus)
 
         # Test ekranını da senkronla (kayma bitsin)
         if hasattr(self, "sample_input"):    self.sample_input.setText(m1)
@@ -745,14 +766,12 @@ class MyApp(QMainWindow):
         if hasattr(self, "target_input_R"): self.target_input_R.setText(R)
         if hasattr(self, "target_input_G"): self.target_input_G.setText(G)
         if hasattr(self, "target_input_B"): self.target_input_B.setText(B)
-        # Sayısal zaman değişkenleri
         self.formul_air_pump_time       = fnum(air,   5)
         self.formul_water_pump_time     = fnum(water, 3)
         self.formul_selenoid_valve_time = fnum(selen, 3)
         self.formul_cokme_valve_time    = fnum(cokme, 10)
 
         # Math formülünü ekrana aktar
-        math_formula = get(17, "")
         if hasattr(self, "math_formul_input"):
             self.math_formul_input.setText(math_formula)
 
