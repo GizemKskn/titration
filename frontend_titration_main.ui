@@ -51,7 +51,7 @@
        <string notr="true">font-size: 12px;</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -3208,7 +3208,7 @@ background-color: blue;</string>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="formul_threshold_input_G_3">
+                <widget class="QLineEdit" name="formul_threshold_input_G_2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
@@ -3224,7 +3224,7 @@ background-color: blue;</string>
                 </widget>
                </item>
                <item row="1" column="2">
-                <widget class="QLineEdit" name="formul_threshold_input_B_3">
+                <widget class="QLineEdit" name="formul_threshold_input_B_2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>

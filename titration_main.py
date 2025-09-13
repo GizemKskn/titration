@@ -610,8 +610,8 @@ class MyApp(QMainWindow):
             water_txt = getattr(self, "formul_water_pump_input_2", getattr(self, "formul_water_pump_input", None)).text()
             selen_txt = getattr(self, "formul_selenoid_valve_input_2", getattr(self, "formul_selenoid_valve_input", None)).text()
 
-            m4_txt = self.formul_motor4_input.text() if hasattr(self, "formul_motor4_input") else "0"
-            m5_txt = self.formul_motor5_input.text() if hasattr(self, "formul_motor5_input") else "0"
+            m4_txt = getattr(self, "formul_motor4_input").text() if hasattr(self, "formul_motor4_input") else "0"
+            m5_txt = getattr(self, "formul_motor5_input").text() if hasattr(self, "formul_motor5_input") else "0"
 
             # Artı ve eksi thresholdlar
             thrR_plus = self.formul_threshold_input_R.text()
@@ -621,31 +621,28 @@ class MyApp(QMainWindow):
             thrG_minus = self.formul_threshold_input_G_2.text() if hasattr(self, "formul_threshold_input_G_2") else thrG_plus
             thrB_minus = self.formul_threshold_input_B_2.text() if hasattr(self, "formul_threshold_input_B_2") else thrB_plus
 
-            math_formula = self.math_formul_input.text() if hasattr(self, "math_formul_input") else ""
-
-            # 21 alanı sırayla ekle!
             data = [
-                name,  # 0
-                self.formul_motor1_input.text(),  # 1
-                self.formul_motor2_input.text(),  # 2
-                self.formul_motor3_input.text(),  # 3
-                self.formul_motor3_preload_input.text(),  # 4
-                m4_txt,  # 5
-                m5_txt,  # 6
-                air_txt,  # 7
-                water_txt,  # 8
-                selen_txt,  # 9
-                self.formul_cokme_valve_input.text(),  # 10
-                self.formul_target_input_R.text(),  # 11
-                self.formul_target_input_G.text(),  # 12
-                self.formul_target_input_B.text(),  # 13
-                thrR_plus,  # 14
-                thrG_plus,  # 15
-                thrB_plus,  # 16
-                thrR_minus, # 17
-                thrG_minus, # 18
-                thrB_minus, # 19
-                math_formula  # 20
+                name,
+                self.formul_motor1_input.text(),
+                self.formul_motor2_input.text(),
+                self.formul_motor3_input.text(),
+                self.formul_motor3_preload_input.text(),
+                m4_txt,
+                m5_txt,
+                air_txt,
+                water_txt,
+                selen_txt,
+                self.formul_cokme_valve_input.text(),
+                self.formul_target_input_R.text(),
+                self.formul_target_input_G.text(),
+                self.formul_target_input_B.text(),
+                thrR_plus,
+                thrG_plus,
+                thrB_plus,
+                thrR_minus,
+                thrG_minus,
+                thrB_minus,
+                getattr(self, "math_formul_input").text() if hasattr(self, "math_formul_input") else ""
             ]
 
             # Aynı isimliyse üzerine yaz
@@ -700,6 +697,7 @@ class MyApp(QMainWindow):
         Fazla kolonları yok sayar, eksiklerde varsayılan kullanır.
         """
         p = list(p)
+        # Alan sayısı 21 olmalı (0-20 arası)
 
         def get(i, dflt=""):
             return p[i] if i < len(p) else dflt
