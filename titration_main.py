@@ -697,6 +697,9 @@ class MyApp(QMainWindow):
         Fazla kolonları yok sayar, eksiklerde varsayılan kullanır.
         """
         p = list(p)
+        # Alan sayısı 21 olmalı (0-20 arası)
+        while len(p) < 21:
+            p.append("")
 
         def get(i, dflt=""):
             return p[i] if i < len(p) else dflt
