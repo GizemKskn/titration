@@ -751,6 +751,11 @@ class MyApp(QMainWindow):
         self.formul_selenoid_valve_time = fnum(selen, 3)
         self.formul_cokme_valve_time    = fnum(cokme, 10)
 
+        # Math formülünü ekrana aktar
+        math_formula = get(17, "")
+        if hasattr(self, "math_formul_input"):
+            self.math_formul_input.setText(math_formula)
+
     # ---------- Dev/IO ----------
     def control_motor1(self, ml_value):
         self._motor_cmd(1, ml_value)
