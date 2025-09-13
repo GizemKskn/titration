@@ -439,10 +439,50 @@ class MyApp(QMainWindow):
         if self.current_rgb:
             r, g, b = self.current_rgb
             self.save_report(r, g, b)
-            self.calculate_math_formul()
+            self.calculate_math_formula_result()  
         self.successful_tests_count = 0
         self.current_rgb = None
         self.rgb_received = False
+
+    def calculate_math_formula_result(self):
+        """
+        Ölçüm sayfasındaki math_formul_input alanındaki formülü değerlendirir.
+        M1, M2, M3 değişkenleri ile sonucu hesaplar ve graphicsView_output'a yazar.
+        """
+        try:
+            # Motor sarfiyatlarını al
+            M1 = float(self.sample_input.text().replace(',', '.') or 0)
+            M2 = float(self.indicator_input.text().replace(',', '.') or 0)
+            preload = float(self.formul_motor3_preload_input.text().replace(',', '.') or 0)
+            titrant = float(self.titrant_input.text().replace(',', '.') or 0)
+            repeat_count = max(1, self.successful_tests_count)
+            M3 = preload + titrant * repeat_count
+
+            # Formülü al
+            formula = self.math_formul_input.text()
+            # Güvenli ortamda değerlendir
+            allowed_names = {"M1": M1, "M2": M2, "M3": M3}
+            result = eval(formula, {"__builtins__": None}, allowed_names)
+
+            # Sonucu graphicsView_output'a yaz
+            if hasattr(self, "graphicsView_output") and self.graphicsView_output is not None:
+                sc = QGraphicsScene()
+                sc.addText(f"Formül Sonucu: {result:.4f}")
+                self.graphicsView_output.setScene(sc)
+            else:
+                print(f"Formül Sonucu: {result:.4f}")
+
+            # Tekrar sayısını status_label'a yaz
+            if hasattr(self, "status_label") and self.status_label is not None:
+                self.status_label.setText(f"Tespit edilen tekrar sayısı: {repeat_count}")
+
+        except Exception as e:
+            if hasattr(self, "graphicsView_output") and self.graphicsView_output is not None:
+                sc = QGraphicsScene()
+                sc.addText(f"Formül hatası: {e}")
+                self.graphicsView_output.setScene(sc)
+            else:
+                print(f"Formül hatası: {e}")
 
     # ---------- Temizlik ----------
     def clean_system(self):
