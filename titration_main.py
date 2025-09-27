@@ -124,10 +124,9 @@ class CameraThread(QThread):
             config = self.picam2.create_still_configuration(
                 main={"size": (320, 240), "format": "RGB888"}
             )
-            config["colour_space"] = libcamera.ColorSpace.Srgb
+            config["transform"] = libcamera.Transform(hflip=True, vflip=True)
             self.picam2.configure(config)
             self.picam2.start()
-            self.picam2.set_controls({"AwbEnable": True})
             return True
         except Exception:
             self.picam2 = None
