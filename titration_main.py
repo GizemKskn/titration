@@ -137,11 +137,19 @@ class CameraThread(QThread):
             return
         while True:
             try:
-                frame = self.picam2.capture_array()
-                raw = frame.tobytes()
+                frame = self.picam2.capture_array()  # numpy HxWxC
                 h, w, c = frame.shape
-                qimg = QImage(frame.data, w, h, 3 * w, QImage.Format_RGB888)
-                self.update_image.emit(qimg, raw)
+
+                # Önce BGR varsay ve Qt'nin BGR888’ini dene:
+                try:
+                    qimg = QImage(frame.data, w, h, 3*w, QImage.Format_BGR888)
+                except AttributeError:
+                    # Qt sürümünde BGR888 yoksa R<->B swap yapıp RGB888 kullan
+                    frame = frame[..., [2,1,0]].copy()
+                    qimg = QImage(frame.data, w, h, 3*w, QImage.Format_RGB888)
+
+                # Bellek güvenliği için kopyasını yolla
+                self.update_image.emit(qimg.copy(), frame.tobytes())
             except Exception:
                 time.sleep(0.2)
 
