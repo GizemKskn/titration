@@ -138,11 +138,11 @@ class CameraThread(QThread):
             return
         while True:
             try:
-                frame = self.picam2.capture_array()      # RGB888 bekliyoruz
-                frame = frame[..., ::-1].copy()          # R<->B swap (tek sefer)
+                frame = self.picam2.capture_array()
+                raw = frame.tobytes()
                 h, w, c = frame.shape
-                qimg = QImage(frame.data, w, h, 3*w, QImage.Format_RGB888)
-                self.update_image.emit(qimg, frame.tobytes())
+                qimg = QImage(frame.data, w, h, 3 * w, QImage.Format_RGB888)
+                self.update_image.emit(qimg, raw)
             except Exception:
                 time.sleep(0.2)
 
