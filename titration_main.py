@@ -121,10 +121,13 @@ class CameraThread(QThread):
             if not info:
                 return False
             self.picam2 = Picamera2()
-            config = self.picam2.create_still_configuration(main={"size": (320, 240), "format": "RGB888"})
-            config["transform"] = libcamera.Transform(hflip=True, vflip=True)
+            config = self.picam2.create_still_configuration(
+                main={"size": (320, 240), "format": "RGB888"}
+            )
+            config["colour_space"] = libcamera.ColorSpace.Srgb
             self.picam2.configure(config)
             self.picam2.start()
+            self.picam2.set_controls({"AwbEnable": True})
             return True
         except Exception:
             self.picam2 = None
@@ -135,11 +138,11 @@ class CameraThread(QThread):
             return
         while True:
             try:
-                frame = self.picam2.capture_array()
-                raw = frame.tobytes()
+                frame = self.picam2.capture_array()      # RGB888 bekliyoruz
+                frame = frame[..., ::-1].copy()          # R<->B swap (tek sefer)
                 h, w, c = frame.shape
-                qimg = QImage(frame.data, w, h, 3 * w, QImage.Format_RGB888)
-                self.update_image.emit(qimg, raw)
+                qimg = QImage(frame.data, w, h, 3*w, QImage.Format_RGB888)
+                self.update_image.emit(qimg, frame.tobytes())
             except Exception:
                 time.sleep(0.2)
 
