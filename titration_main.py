@@ -121,7 +121,7 @@ class CameraThread(QThread):
             if not info:
                 return False
             self.picam2 = Picamera2()
-            config = self.picam2.create_still_configuration(main={"size": (320, 240)})
+            config = self.picam2.create_still_configuration(main={"size": (320, 240), "format": "RGB888"})
             config["transform"] = libcamera.Transform(hflip=True, vflip=True)
             self.picam2.configure(config)
             self.picam2.start()
@@ -329,7 +329,7 @@ class MyApp(QMainWindow):
     def update_graphics_view(self, qImg: QImage, raw_data: bytes):
         self.scene.clear()
         # sadece görüntü amaçlı; sayısal RGB'yi FQ2 veriyor
-        self.scene.addPixmap(QPixmap.fromImage(qImg.rgbSwapped()))
+        self.scene.addPixmap(QPixmap.fromImage(qImg))
         for gv in (self.graphics_view_1, self.graphics_view_2, self.graphics_view_3):
             if gv:
                 gv.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
